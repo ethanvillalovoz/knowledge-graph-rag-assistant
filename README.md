@@ -8,7 +8,7 @@ We developed a RAG (Retrieval-Augmented Generation) application for [HackerEarth
 
 ### Project Demo
 
-[Demo link](https://www.youtube.com/watch?v=QuenU0tsGSU)
+[Demo link](https://www.youtube.com/watch?v=YWdR3FAdq1o)
 
 ### Additional information about the project
 
