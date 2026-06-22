@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ACME10-HE-RAGApp"
 version = "0.1.0"
-description = "WSU Capstone Project 2024-2025"
+description = "WSU senior design capstone RAG prototype for HackerEarth"
 
 [tool.setuptools.packages.find]
 where = ["."]

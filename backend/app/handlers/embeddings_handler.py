@@ -1,42 +1,16 @@
 import os
 import pandas as pd
 import numpy as np
-from transformers import BertTokenizer, BertModel
 from sentence_transformers import SentenceTransformer
 import pymupdf
-import re
 import nltk
 from nltk.tokenize import sent_tokenize
-
-##############################################################
-### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
-##############################################################
-# from backend.app.config import EMBEDDINGS_DATA_DIR, WIKI_DATA_FILE, CLEAN_WIKI_DATA_FILE
-
-# Configuration
-# Base directory for data processing
-# Get the absolute path to the current file's directory
-CURRENT_FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Go up one level to the app directory
-APP_DIR = os.path.dirname(CURRENT_FILE_DIR)
-# Go up another level to the backend directory
-BACKEND_DIR = os.path.dirname(APP_DIR)
-# Go up another level to the root directory (if needed)
-ROOT_DIR = os.path.dirname(BACKEND_DIR)
-# Base directory for data processing
-BASE_DATA_DIR = os.path.join(BACKEND_DIR, 'app', 'data_processing')
-
-# Subdirectories for specific handlers
-EMBEDDINGS_DATA_DIR = os.path.join(BASE_DATA_DIR, "embeddings_data")
-VECTOR_SEARCH_DATA_DIR = os.path.join(BASE_DATA_DIR, "vector_search_data")
-LLM_DATA_DIR = os.path.join(BASE_DATA_DIR, "llm_data")
-
-# Common file paths
-WIKI_DATA_FILE = os.path.join(BASE_DATA_DIR, "simpleWikiData.parquet")
-PDF_PARQUET_FILE = os.path.join(BASE_DATA_DIR, "pdf_data.parquet")
-CLEAN_WIKI_DATA_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "clean_wiki_data.parquet")
-EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
-FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
+from backend.app.config import (
+    CLEAN_WIKI_DATA_FILE,
+    EMBEDDINGS_DATA_DIR,
+    PDF_PARQUET_FILE,
+    WIKI_DATA_FILE,
+)
 
 TEXT_COLUMN = "text"  # Replace with the name of the column containing text
 BATCH_SIZE = 32  # Adjust based on your GPU/CPU memory

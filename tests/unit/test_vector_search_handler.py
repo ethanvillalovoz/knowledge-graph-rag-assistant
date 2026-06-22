@@ -13,8 +13,12 @@ def dummy_embeddings():
 def vector_search_handler(dummy_embeddings, tmp_path):
     """Fixture to initialize a VectorSearchHandler with dummy embeddings."""
     embedding_path = tmp_path / "dummy_embeddings.npy"
+    index_path = tmp_path / "dummy_index.faiss"
     np.save(embedding_path, dummy_embeddings)
-    handler = VectorSearchHandler(embedding_path=str(embedding_path))
+    handler = VectorSearchHandler(
+        embedding_path=str(embedding_path),
+        index_path=str(index_path),
+    )
     handler.build_index(dummy_embeddings)
     return handler
 
@@ -35,10 +39,15 @@ def test_search(vector_search_handler, dummy_embeddings):
     assert distances[0] == max(distances)  # Ensure closest match does have the max similarity score retrieved
 
 
-def test_vector_search_large_embeddings():
+def test_vector_search_large_embeddings(tmp_path):
     """Test vector search efficiency on large datasets."""
     large_embeddings = np.random.random((100000, 128)).astype(np.float32)  # 100K vectors
-    handler = VectorSearchHandler(embedding_path="large_embeddings.npy")
+    embedding_path = tmp_path / "large_embeddings.npy"
+    index_path = tmp_path / "large_index.faiss"
+    handler = VectorSearchHandler(
+        embedding_path=str(embedding_path),
+        index_path=str(index_path),
+    )
     handler.build_index(large_embeddings)
 
     query = np.expand_dims(large_embeddings[0], axis=0)

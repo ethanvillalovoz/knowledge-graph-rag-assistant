@@ -2,23 +2,32 @@
 
 # dependencies
 /node_modules
+frontend/rag-app/node_modules/
 /.pnp
 .pnp.js
 
 # testing
 /coverage
+frontend/rag-app/coverage/
 /__pycache__/
 /__pytest_cache__/
 /.pytest_cache/
+.coverage
+htmlcov/
 *.pyc
 
 # production
 /build
+frontend/rag-app/build/
+dist/
 
 # misc
 .DS_Store
 .env
 .env.*
+!.env.example
+.mypy_cache/
+.ruff_cache/
 
 # Python virtual environments
 .venv/
@@ -35,3 +44,6 @@ yarn-error.log*
 # embeddings
 text_embeddings.npy
 *.npy
+
+# Python packaging
+*.egg-info/

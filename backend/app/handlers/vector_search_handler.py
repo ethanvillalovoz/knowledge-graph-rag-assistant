@@ -1,38 +1,13 @@
 import pandas as pd
 import numpy as np
-from transformers import BertTokenizer, BertModel
 from sentence_transformers import SentenceTransformer
 import faiss
 import os
-##############################
-### TODO: FIX IMPORT ERROR ###
-##############################
-#from backend.app.config import EMBEDDINGS_FILE, FAISS_INDEX_FILE
-
-### CONFIGS ###
-# Configuration
-# Base directory for data processing
-# Get the absolute path to the current file's directory
-CURRENT_FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Go up one level to the app directory
-APP_DIR = os.path.dirname(CURRENT_FILE_DIR)
-# Go up another level to the backend directory
-BACKEND_DIR = os.path.dirname(APP_DIR)
-# Go up another level to the root directory (if needed)
-ROOT_DIR = os.path.dirname(BACKEND_DIR)
-# Base directory for data processing
-BASE_DATA_DIR = os.path.join(BACKEND_DIR, 'app', 'data_processing')
-
-# Subdirectories for specific handlers
-EMBEDDINGS_DATA_DIR = os.path.join(BASE_DATA_DIR, "embeddings_data")
-VECTOR_SEARCH_DATA_DIR = os.path.join(BASE_DATA_DIR, "vector_search_data")
-LLM_DATA_DIR = os.path.join(BASE_DATA_DIR, "llm_data")
-
-# Common file paths
-WIKI_DATA_FILE = os.path.join(BASE_DATA_DIR, "simpleWikiData.parquet")
-CLEAN_WIKI_DATA_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "clean_wiki_data.parquet")
-EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
-FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
+from backend.app.config import (
+    CLEAN_WIKI_DATA_FILE,
+    EMBEDDINGS_FILE,
+    FAISS_INDEX_FILE,
+)
 
 class VectorSearchHandler:
     def __init__(self, embedding_path=EMBEDDINGS_FILE, index_path=FAISS_INDEX_FILE):
@@ -57,7 +32,9 @@ class VectorSearchHandler:
         self.index.add(embeddings_normalized)
         print(f"Index built with {self.index.ntotal} vectors.")
 
-        os.makedirs(VECTOR_SEARCH_DATA_DIR, exist_ok=True)
+        index_dir = os.path.dirname(self.index_path)
+        if index_dir:
+            os.makedirs(index_dir, exist_ok=True)
         faiss.write_index(self.index, self.index_path)
 
     def load_index(self):

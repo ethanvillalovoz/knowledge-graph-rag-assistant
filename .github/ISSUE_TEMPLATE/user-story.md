@@ -1,8 +1,8 @@
 ---
 name: User Story
-about: This template is for creating user stories
-title: ''
-labels: ''
+about: Capture a capstone-style user story or acceptance criterion
+title: "[Story]: "
+labels: user-story
 assignees: ''
 
 ---
@@ -12,7 +12,7 @@ assignees: ''
 **So that** [benefit]
 
 ### Details and Assumptions
-* [document what you know]
+- [Document what you know]
 
 ### Acceptance Criteria
 ```gherkin

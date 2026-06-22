@@ -1,189 +1,148 @@
 # ACME10-HE-RAGApp
 
-## Project summary
+ACME10-HE-RAGApp is a Washington State University senior design capstone project built for [HackerEarth](https://www.hackerearth.com/). The system explores retrieval-augmented generation over a large Wikipedia knowledge base using a React frontend, FastAPI backend, DBpedia knowledge graph queries, FAISS vector search, and OpenAI-powered response generation.
 
-### One-sentence description of the project
+This repository is Ethan Villalovoz's maintained fork of the original team project. The capstone team was Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
 
-We developed a RAG (Retrieval-Augmented Generation) application for [HackerEarth](https://www.hackerearth.com/) that utilizes vector search, knowledge graphs, and an LLM to answer questions and generate content from a knowledge base of more than 10,000 Wikipedia articles.
+## Demo
 
-### Project Demo
+- [Project demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
+- [Final project report](docs/project-report/RAGApp-FinalReport.pdf)
+- [Project abstract](docs/project-report/Project-Abstract.pdf)
 
-[Demo link](https://www.youtube.com/watch?v=YWdR3FAdq1o)
+## What It Does
 
-### Additional information about the project
+The application lets a user ask natural-language questions and receive responses grounded in retrieved context. The backend combines:
 
-- **Client:**
-  - [HackerEarth](https://www.hackerearth.com/), based in San Francisco, offers enterprise software for technical hiring. Organizations use their platform to create coding assessments, conduct remote video interviews, and ensure unbiased, AI-powered evaluation of candidates
-- **RAG application:**
-  - Retrieval Augmented Generation (RAG) means supplying a Large Language Model (LLM) with the appropriate processed data from an outside knowledge base. We will use Knowledge Graphs and vector search to optimize data retrieval
-- **Knowledge Graph used:**
-  - DBpedia
-- **Vector Search tool used:**
-  - FAISS
-- **LLM used:**
-  - OpenAI
+- **Vector search:** FAISS index over Wikipedia embeddings.
+- **Embedding model:** SentenceTransformers for semantic retrieval.
+- **Knowledge graph:** DBpedia SPARQL queries for structured context.
+- **LLM layer:** OpenAI chat completion with retrieved evidence.
+- **Frontend:** React chat interface for user queries and generated responses.
 
-## Running the Application with Docker
+## Architecture
 
-If you prefer to use the pre-built Docker images instead of setting up the project manually, follow these steps.
-
-### Prerequisites
-
-- **Install Docker Desktop:** Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
-- **Install Docker Compose:** Ensure you have `docker-compose` installed. You can install it via Python:
-
-  ```bash
-  pip install docker-compose
-  ```
-
-- **LLM API Key:** Ensure you have an OpenAI key 
-
-### Running the Application
-
-1. **Pull the Frontend Image:**
-
-   ```bash
-   docker pull ghcr.io/mollyiverson/acme10-he-ragapp-frontend:latest
-   ```
-
-2. **Pull the Backend Image:**
-
-   ```bash
-   docker pull ghcr.io/mollyiverson/acme10-he-ragapp-backend:latest
-   ```
-
-3. **Download the `docker-compose.yml` File:**
-
-   ```bash
-   curl -O https://raw.githubusercontent.com/mollyiverson/ACME10-HE-RAGApp/main/docker-compose.yml
-   ```
-
-   Or, download it manually from the repository. Keep it in the same location you used to pull the docker images.
-
-4. **Add your OpenAI API key to the docker-compose.yml file**
-
-5. **Start the Containers:**
-
-   ```bash
-   docker-compose up
-   ```
-
-6. **Access the Application:**
-   - Open your browser and go to `http://localhost:3000`.
-
-### Stopping and Cleaning Up
-
-- **Shut down the application:**
-
-  ```bash
-  docker-compose down
-  ```
-
-- **Remove Docker Images (if needed):**
-  The images take up more than 10 GB, so you may want to remove them after use.
-  ```bash
-  docker rmi ghcr.io/mollyiverson/acme10-he-ragapp-frontend:latest
-  docker rmi ghcr.io/mollyiverson/acme10-he-ragapp-backend:latest
-  ```
-
----
-
-## Installation (For Local Development)
-
-If you prefer to run the application locally by cloning the repository, follow the steps below.
-
-### Prerequisites
-
-- **Git:** Ensure that you have Git installed to clone the repository. You can install Git from [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- **Python 3.9+:** Required to run the backend services of the RAG application
-- **Node.js:** For running the frontend, you need to have Node.js installed. Get it from [here](https://nodejs.org/en/)
-- **LLM API Key:** Ensure you have an OpenAI key saved in your environment
-
-```bash
-# For Linux
-export OPEN_API_KEY=value
+```text
+frontend/rag-app         React + TypeScript user interface
+backend/app/main.py      FastAPI application entrypoint
+backend/app/routers      API routes for NLP, DBpedia, and vector search
+backend/app/handlers     LLM, embedding, and vector search logic
+backend/app/data_processing
+                         dataset extraction and embedding assets
+tests                    backend unit and integration tests
+docs                     meeting notes, sprint reports, code guides, and reports
 ```
 
-### Installation Steps
+## Quick Start With Docker
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/mollyiverson/ACME10-HE-RAGApp.git
-   cd ACME10-HE-RAGApp
-   ```
-2. **Download Embeddings:** Download the required embedding files from this [Hugging Face repository](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main)
-    - Place `text_embeddings.npy` in `backend/app/data_processing/embeddings_data/`
-    - Place `index.faiss` in `backend/app/data_processing/vector_search_data/`
+Docker is the easiest way to run the full app because the backend depends on large embedding and FAISS index files.
 
-Set up two terminals.
-
-3. **Install Backend Dependencies in terminal 1:**
+1. Create a local environment file:
 
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   # On Windows: `venv\Scripts\activate`
-   # On Linux: `source venv/Scripts/activate`
-   cd backend
-   pip install -r requirements.txt
+   cp .env.example .env
    ```
 
-4. **Run Backend in terminal 1:**
+2. Add your OpenAI API key to `.env`:
 
    ```bash
-   python -m uvicorn app.main:app --reload
-
-   """
-     if you get the error: `ModuleNotFoundError: No module named 'backend'`,
-     then `cd ..` into the root of the project,
-     then `export PYTHONPATH=$(pwd)/backend` for macOS/Linux or `set PYTHONPATH=%cd%` for Windows.
-     Then, do Step 4 again.
-   """
+   OPENAI_API_KEY=sk-your-key-here
    ```
 
-5. **Run Frontend in terminal 2:**
+3. Build and start the app:
 
-    - Download [Node.js (LTS)](https://nodejs.org/en)
-    ```bash
-    cd frontend/rag-app
-    npm install
-    npm start
-    ```
-
-The application should now be running on `localhost:3000` for both frontend and backend.
-
-6. **Run Tests:**
    ```bash
-   cd ACME10-HE-RAGApp
-   set PYTHONPATH=%cd%
-   # On macOS/Linux: `export PYTHONPATH=$(pwd)`
-   pytest -s  # -s is optional if you want print statements to show
+   docker compose up --build
    ```
 
-## Functionality
+4. Open the app:
 
-The RAG application allows users to enter queries and receive accurate, context-rich responses from a combination of vector search and knowledge graphs. It uses both the large Wikipedia dataset and a custom dataset of class notes to highlight the immense potential of the RAG model.
+   - Frontend: [http://localhost:3000](http://localhost:3000)
+   - Backend API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### Walkthrough
+To stop the app:
 
-1. Open the application in your browser
-2. Input a question or query related to the Wikipedia dataset
-3. The application retrieves relevant information using vector embeddings
-4. The knowledge graph adds contextual insights to the response
-5. The LLM generates a coherent answer based on the retrieved data
+```bash
+docker compose down
+```
+
+## Local Development
+
+### Prerequisites
+
+- Python 3.10
+- Node.js 20.19+ or 22+
+- OpenAI API key
+
+### Backend
+
+From the repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r backend/requirements.txt
+export OPENAI_API_KEY=sk-your-key-here
+export PYTHONPATH=$(pwd)
+uvicorn backend.app.main:app --reload
+```
+
+The vector search runtime also needs the large embedding files from the project dataset:
+
+- Download `text_embeddings.npy` from the [Hugging Face dataset](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main) into `backend/app/data_processing/embeddings_data/`.
+- Download `index.faiss` into `backend/app/data_processing/vector_search_data/`.
+
+### Frontend
+
+In a second terminal:
+
+```bash
+cd frontend/rag-app
+npm ci
+npm start
+```
+
+The frontend runs at [http://localhost:3000](http://localhost:3000) and expects the backend at [http://localhost:8000](http://localhost:8000).
+
+## Testing
+
+Backend:
+
+```bash
+CI=true PYTHONPATH=. pytest tests/
+```
+
+Frontend:
+
+```bash
+cd frontend/rag-app
+npm test
+npm run build
+```
+
+`CI=true` lets the backend tests avoid requiring a real OpenAI API key.
+
+## Documentation
+
+- [Sprint reports](docs/sprint-reports/)
+- [Meeting notes](docs/meeting-notes/)
+- [Code guides](docs/code-guides/)
+- [Performance notes](docs/performance-stats.md)
+- [Final project report](docs/project-report/RAGApp-FinalReport.pdf)
+- [Final client presentation](docs/project-report/final_client_presentation_ragapp.pdf)
 
 ## Known Limitations
 
-- **Vector Search Inaccuracies:** With over 10,000 articles, vector search has difficulty finding the most relevant information.
-- **Error Handling with Knowledge Graph Queries:** If a SPARQL query to the knowledge graph fails, the system may return incomplete information
-- **Missing Responses:** In rare cases, the system might generate an "I don't know" response when the knowledge base doesn't have enough data to provide an accurate answer
+- Vector search quality depends heavily on embedding coverage, chunking strategy, and threshold tuning.
+- DBpedia SPARQL queries can fail or return sparse context for ambiguous entities.
+- The project prototype uses large local embedding artifacts that are not committed to the repository.
+- Some generated responses may still be limited by retrieval quality or missing source coverage.
 
-## Additional Documentation
+## Credits
 
-- [Project Report](docs/project-report/RAGApp-FinalReport.pdf)
-- [Project Abstract](docs/project-report/Project-Abstract.pdf)
-- [Sprint reports](docs/sprint-reports/)
+This project was developed as a WSU senior design capstone project for HackerEarth by Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
 
 ## License
 
-See `LICENSE.txt`
+This project is licensed under the terms in [LICENSE](LICENSE).
