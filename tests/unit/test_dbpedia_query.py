@@ -15,7 +15,7 @@ def test_data():
     }
 
 
-def test_query_dbpedia():
+def test_query_dbpedia(mock_dbpedia):
     subject = encode_resource("Albert Einstein")
     sparql_query = f"""
     PREFIX dbo: <http://dbpedia.org/ontology/>
@@ -34,10 +34,10 @@ def test_query_dbpedia():
     assert len(result["results"]["bindings"]
                ) > 0, "Expected non-empty bindings from DBpedia"
     abstract_value = result["results"]["bindings"][0]["abstract"]["value"]
-    assert abstract_value, test_data["abstract"]
+    assert "Albert Einstein" in abstract_value
 
 
-def test_query_dbpedia_no_results():
+def test_query_dbpedia_no_results(mock_dbpedia):
     subject = encode_resource("NonExistentEntityXYZ")
     sparql_query = f"""
     PREFIX dbo: <http://dbpedia.org/ontology/>
@@ -54,4 +54,3 @@ def test_query_dbpedia_no_results():
 
     assert "results" in result
     assert len(result["results"]["bindings"]) == 0, "Expected empty results for non-existent entity"
-

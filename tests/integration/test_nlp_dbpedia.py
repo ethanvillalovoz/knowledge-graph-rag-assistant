@@ -54,7 +54,7 @@ def test_process_query_detect_harmful_intent(test_data):
     assert harmful_data["is_harmful"]
 
 
-def test_normal_nlp_to_dbpedia(test_data):
+def test_normal_nlp_to_dbpedia(test_data, mock_dbpedia):
     doc = client.post("/nlp/process_query",
                       json={"query": test_data["query"]}).json()
     entities = doc["entities"]
@@ -72,4 +72,4 @@ def test_normal_nlp_to_dbpedia(test_data):
     assert len(result["results"]["bindings"]
                ) > 0, "Expected non-empty bindings from DBpedia"
     abstract_value = result["results"]["bindings"][0]["abstract"]["value"]
-    assert abstract_value, test_data["abstract"]
+    assert "Albert Einstein" in abstract_value
