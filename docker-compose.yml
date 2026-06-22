@@ -1,10 +1,11 @@
+name: knowledge-graph-rag-assistant
 
 services:
   backend:
     build:
       context: .
       dockerfile: dockerfile
-    image: ghcr.io/ethanvillalovoz/acme10-he-ragapp-backend:latest
+    image: ghcr.io/ethanvillalovoz/knowledge-graph-rag-assistant-backend:latest
     ports:
       - "8000:8000"
     environment:
@@ -15,7 +16,7 @@ services:
     build:
       context: ./frontend/rag-app
       dockerfile: dockerfile
-    image: ghcr.io/ethanvillalovoz/acme10-he-ragapp-frontend:latest
+    image: ghcr.io/ethanvillalovoz/knowledge-graph-rag-assistant-frontend:latest
     ports:
       - "3000:80"
     depends_on:

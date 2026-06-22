@@ -1,6 +1,6 @@
 # Documentation
 
-This directory preserves supporting materials from the ACME10-HE-RAGApp senior design capstone project.
+This directory preserves supporting materials from the Knowledge Graph RAG Assistant senior design capstone project, originally developed under the ACME10-HE-RAGApp name.
 
 ## Contents
 

@@ -1,6 +1,6 @@
-# ACME10-HE-RAGApp Frontend
+# Knowledge Graph RAG Assistant Frontend
 
-React + TypeScript frontend for the ACME10 HackerEarth RAG capstone prototype.
+React + TypeScript frontend for the WSU HackerEarth knowledge graph RAG capstone prototype.
 
 ## Development
 

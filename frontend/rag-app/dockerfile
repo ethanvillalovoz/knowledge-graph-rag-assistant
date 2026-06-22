@@ -2,7 +2,7 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-LABEL org.opencontainers.image.source="https://github.com/ethanvillalovoz/ACME10-HE-RAGApp"
+LABEL org.opencontainers.image.source="https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant"
 
 COPY package.json package-lock.json ./
 RUN npm ci

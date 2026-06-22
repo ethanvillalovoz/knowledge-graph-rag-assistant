@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve ACME10-HE-RAGApp. This repository preserves and maintains a WSU senior design capstone project, so contributions should keep the project history, team attribution, and HackerEarth client context intact.
+Thanks for helping improve Knowledge Graph RAG Assistant. This repository preserves and maintains a WSU senior design capstone project originally developed as ACME10-HE-RAGApp, so contributions should keep the project history, team attribution, and HackerEarth client context intact.
 
 ## Development Setup
 

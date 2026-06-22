@@ -3,9 +3,9 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ACME10-HE-RAGApp"
+name = "knowledge-graph-rag-assistant"
 version = "0.1.0"
-description = "WSU senior design capstone RAG prototype for HackerEarth"
+description = "WSU senior design capstone RAG prototype for HackerEarth using FastAPI, React, DBpedia, FAISS, and OpenAI"
 
 [tool.setuptools.packages.find]
 where = ["."]

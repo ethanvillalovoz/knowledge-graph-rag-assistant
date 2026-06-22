@@ -1,8 +1,8 @@
-# ACME10-HE-RAGApp
+# Knowledge Graph RAG Assistant
 
-ACME10-HE-RAGApp is a Washington State University senior design capstone project built for [HackerEarth](https://www.hackerearth.com/). The system explores retrieval-augmented generation over a large Wikipedia knowledge base using a React frontend, FastAPI backend, DBpedia knowledge graph queries, FAISS vector search, and OpenAI-powered response generation.
+Knowledge Graph RAG Assistant is a Washington State University senior design capstone project built for [HackerEarth](https://www.hackerearth.com/). The system explores retrieval-augmented generation over a large Wikipedia knowledge base using a React frontend, FastAPI backend, DBpedia knowledge graph queries, FAISS vector search, and OpenAI-powered response generation.
 
-This repository is Ethan Villalovoz's maintained fork of the original team project. The capstone team was Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
+This repository is Ethan Villalovoz's maintained fork of the original team project, originally developed under the ACME10-HE-RAGApp capstone name. The capstone team was Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
 
 ## Demo
 

@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 WORKDIR /
 
-LABEL org.opencontainers.image.source="https://github.com/ethanvillalovoz/ACME10-HE-RAGApp"
+LABEL org.opencontainers.image.source="https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant"
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends wget \
