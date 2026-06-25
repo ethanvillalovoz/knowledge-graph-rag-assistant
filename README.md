@@ -7,6 +7,7 @@ This repository is Ethan Villalovoz's maintained fork of the original team proje
 ## Demo
 
 - [Project demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
+- [Demo strategy](docs/demo-strategy.md)
 - [Final project report](docs/project-report/RAGApp-FinalReport.pdf)
 - [Project abstract](docs/project-report/Project-Abstract.pdf)
 
@@ -128,6 +129,7 @@ npm run build
 - [Sprint reports](docs/sprint-reports/)
 - [Meeting notes](docs/meeting-notes/)
 - [Code guides](docs/code-guides/)
+- [Demo strategy](docs/demo-strategy.md)
 - [Performance notes](docs/performance-stats.md)
 - [Final project report](docs/project-report/RAGApp-FinalReport.pdf)
 - [Final client presentation](docs/project-report/final_client_presentation_ragapp.pdf)
