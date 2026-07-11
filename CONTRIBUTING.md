@@ -9,9 +9,8 @@ Use the root `README.md` for Docker, backend, and frontend setup.
 Common verification commands:
 
 ```bash
-CI=true PYTHONPATH=. pytest tests/
-cd frontend/rag-app && npm test
-cd frontend/rag-app && npm run build
+CI=true PYTHONPATH=. pytest -q tests/
+cd frontend/rag-app && npm run check
 ```
 
 ## Contribution Guidelines

@@ -44,6 +44,7 @@ yarn-error.log*
 # embeddings
 text_embeddings.npy
 *.npy
+*.parquet
 
 # Python packaging
 *.egg-info/

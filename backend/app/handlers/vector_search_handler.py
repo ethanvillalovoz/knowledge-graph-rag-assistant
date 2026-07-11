@@ -1,22 +1,35 @@
-import pandas as pd
-import numpy as np
-from sentence_transformers import SentenceTransformer
-import faiss
 import os
+
+import faiss
+import numpy as np
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+
 from backend.app.config import (
     CLEAN_WIKI_DATA_FILE,
     EMBEDDINGS_FILE,
     FAISS_INDEX_FILE,
 )
 
+
 class VectorSearchHandler:
-    def __init__(self, embedding_path=EMBEDDINGS_FILE, index_path=FAISS_INDEX_FILE):
+    def __init__(
+        self,
+        embedding_path=EMBEDDINGS_FILE,
+        index_path=FAISS_INDEX_FILE,
+        model=None,
+    ):
         self.embedding_path = embedding_path
         self.index_path = index_path
         self.index = None
+        self._model = model
 
-        # Initialize model
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+    @property
+    def model(self):
+        """Load the embedding model only when a query needs encoding."""
+        if self._model is None:
+            self._model = SentenceTransformer("all-MiniLM-L6-v2")
+        return self._model
 
     def load_embeddings(self):
         """Load embeddings from the specified path."""
@@ -26,11 +39,14 @@ class VectorSearchHandler:
 
     def build_index(self, embeddings):
         """Build a FAISS index with cosine similarity."""
-        embeddings_normalized = embeddings / np.linalg.norm(embeddings, axis=1)[:, np.newaxis]
+        norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+        if np.any(norms == 0):
+            raise ValueError("Embeddings must not contain zero-length vectors.")
+
+        embeddings_normalized = embeddings / norms
         dimension = embeddings.shape[1]
-        self.index = faiss.IndexFlatIP(dimension)  
+        self.index = faiss.IndexFlatIP(dimension)
         self.index.add(embeddings_normalized)
-        print(f"Index built with {self.index.ntotal} vectors.")
 
         index_dir = os.path.dirname(self.index_path)
         if index_dir:
@@ -54,12 +70,15 @@ class VectorSearchHandler:
         if self.index is None:
             raise ValueError("Index is not loaded. Build or load an index first.")
 
-        query_vector_normalized = query_vector / np.linalg.norm(query_vector)
-        query_vector_normalized = query_vector_normalized.reshape(1, -1)  # Reshape to 2D (1, d)
+        query_norm = np.linalg.norm(query_vector)
+        if query_norm == 0:
+            raise ValueError("Query vector must not be zero length.")
+
+        query_vector_normalized = query_vector / query_norm
+        query_vector_normalized = query_vector_normalized.reshape(1, -1)
 
         similarities, indices = self.index.search(query_vector_normalized, top_k)
 
-        # Filter results below threshold and remove invalid indices (-1)
         filtered_results = [
             (similarity, index)
             for similarity, index in zip(similarities[0], indices[0])
@@ -67,7 +86,7 @@ class VectorSearchHandler:
         ]
 
         if not filtered_results:
-            return [], []  # No valid results
+            return [], []
 
         filtered_similarities, filtered_indices = zip(*filtered_results)
 
@@ -81,17 +100,11 @@ class VectorSearchHandler:
         original_data = pd.read_parquet(dataset_path)
 
         if original_data.empty:
-            print("Warning: original_data is empty!")
             return []
 
-        # Validate indices
         valid_indices = [i for i in indices if 0 <= i < len(original_data)]
         
         if not valid_indices:
-            print(f"Warning: No valid indices found. Received: {indices}")
-            print(f"Total rows in dataset: {len(original_data)}")
-            print(f"Indices received: {indices}")
-
             return []
 
         return original_data.iloc[valid_indices]["text"].tolist()

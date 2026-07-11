@@ -1,30 +1,33 @@
 import os
+
 from openai import OpenAI
 from dotenv import load_dotenv
-from transformers import pipeline
+
 from backend.app.config import EMBEDDINGS_FILE
 from backend.app.handlers.vector_search_handler import VectorSearchHandler
 
-# OpenAI Configuration
-load_dotenv()  # Loads variables from .env
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Store API Key in Environment Variable
-CHATGPT_MODEL = "gpt-4o-mini"  # Use GPT-4o-mini for efficiency
-
-# Lightweight text generation model used during automated tests.
-LLM_MODEL_NAME = "distilgpt2" if os.getenv("CI") else None
+load_dotenv()
+CHATGPT_MODEL = "gpt-4o-mini"
 
 class LLMHandler:
-    def __init__(self, embedding_path=EMBEDDINGS_FILE):
-        """
-        Initialize the LLM handler with OpenAI ChatGPT model and vector search handler.
-        """
-        if os.getenv("CI"):
-            self.llm = pipeline("text-generation", model=LLM_MODEL_NAME)
-        else:
-            if not OPENAI_API_KEY:
-                raise ValueError("OPENAI_API_KEY environment variable not set")
-            self.client = OpenAI(api_key=OPENAI_API_KEY)  # Initialize OpenAI Client
-        self.vector_search_handler = VectorSearchHandler(embedding_path=embedding_path)
+    def __init__(
+        self,
+        embedding_path=EMBEDDINGS_FILE,
+        client=None,
+        vector_search_handler=None,
+    ):
+        self.client = client
+        self.vector_search_handler = vector_search_handler or VectorSearchHandler(
+            embedding_path=embedding_path
+        )
+
+    def _get_client(self):
+        if self.client is None:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise RuntimeError("OPENAI_API_KEY environment variable is not set")
+            self.client = OpenAI(api_key=api_key)
+        return self.client
 
     def get_vector_search_results(self, query_vector, top_k=10):
         """
@@ -73,26 +76,19 @@ class LLMHandler:
         return query
 
     def query_llm(self, query, max_tokens=200, temperature=0.5):
-        if os.getenv("CI"):
-            response = self.llm(query, max_new_tokens=max_tokens, temperature=temperature, do_sample=True)
-            full_text = response[0]["generated_text"]
-            llm_response = full_text[len(query):].strip()
-            return llm_response
-        else:
-            try:
-                response = self.client.chat.completions.create(
-                    model=CHATGPT_MODEL,
-                    messages=[
-                        {"role": "system", "content": "You are a helpful assistant."},
-                        {"role": "user", "content": query}
-                    ],
-                    max_tokens=max_tokens,
-                    temperature=temperature
-                )
-                return response.choices[0].message.content.strip()
-            except Exception as e:
-                print(f"Error querying ChatGPT: {e}")
-                return "An error occurred while generating a response."
+        response = self._get_client().chat.completions.create(
+            model=CHATGPT_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Answer with concise, evidence-aware technical prose.",
+                },
+                {"role": "user", "content": query},
+            ],
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+        return response.choices[0].message.content.strip()
 
 
 # Example Usage

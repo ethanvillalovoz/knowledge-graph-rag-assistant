@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, Field
+
 
 class Query(BaseModel):
-    query: str
-    vector_search_results: Optional[List[str]] = None
-    kg_results: Optional[str] = None
+    query: str = Field(min_length=1, max_length=2_000)
+    vector_search_results: list[str] | None = Field(default=None, max_length=20)
+    kg_results: str | None = Field(default=None, max_length=20_000)
