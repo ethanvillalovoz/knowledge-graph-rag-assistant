@@ -6,7 +6,8 @@ from backend.app.handlers.vector_search_handler import VectorSearchHandler
 @pytest.fixture
 def dummy_embeddings():
     """Fixture to create dummy embeddings for testing."""
-    return np.random.random((10, 128)).astype(np.float32)  # 10 vectors of 128 dimensions
+    generator = np.random.default_rng(seed=42)
+    return generator.random((10, 128), dtype=np.float32)
 
 
 @pytest.fixture
@@ -39,9 +40,10 @@ def test_search(vector_search_handler, dummy_embeddings):
     assert distances[0] == max(distances)  # Ensure closest match does have the max similarity score retrieved
 
 
-def test_vector_search_large_embeddings(tmp_path):
-    """Test vector search efficiency on large datasets."""
-    large_embeddings = np.random.random((100000, 128)).astype(np.float32)  # 100K vectors
+def test_vector_search_medium_index(tmp_path):
+    """Exercise a non-trivial index without turning a unit test into a benchmark."""
+    generator = np.random.default_rng(seed=42)
+    large_embeddings = generator.random((10_000, 128), dtype=np.float32)
     embedding_path = tmp_path / "large_embeddings.npy"
     index_path = tmp_path / "large_index.faiss"
     handler = VectorSearchHandler(

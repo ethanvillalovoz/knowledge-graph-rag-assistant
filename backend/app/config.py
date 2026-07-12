@@ -15,3 +15,12 @@ PDF_PARQUET_FILE = os.path.join(BASE_DATA_DIR, "pdf_data.parquet")
 CLEAN_WIKI_DATA_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "clean_wiki_data.parquet")
 EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
 FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
+
+
+def get_allowed_origins() -> list[str]:
+    """Return explicitly configured browser origins for the API."""
+    configured = os.getenv(
+        "RAG_ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    )
+    return [origin.strip() for origin in configured.split(",") if origin.strip()]

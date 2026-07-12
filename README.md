@@ -1,150 +1,127 @@
 # Knowledge Graph RAG Assistant
 
-Knowledge Graph RAG Assistant is a Washington State University senior design capstone project built for [HackerEarth](https://www.hackerearth.com/). The system explores retrieval-augmented generation over a large Wikipedia knowledge base using a React frontend, FastAPI backend, DBpedia knowledge graph queries, FAISS vector search, and OpenAI-powered response generation.
+An evidence-aware research workspace that combines dense retrieval, DBpedia knowledge-graph context, and generated answers.
 
-This repository is Ethan Villalovoz's maintained fork of the original team project, originally developed under the ACME10-HE-RAGApp capstone name. The capstone team was Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
+[![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 
-## Demo
+![Knowledge Graph RAG answering a technical question while exposing its retrieval trace](docs/media/rag-workspace.gif)
 
-- [Project demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
-- [Demo strategy](docs/demo-strategy.md)
-- [Final project report](docs/project-report/RAGApp-FinalReport.pdf)
-- [Project abstract](docs/project-report/Project-Abstract.pdf)
+## Why This Exists
 
-## What It Does
+Most chat interfaces hide the retrieval pipeline. This project keeps it visible. A question moves through entity extraction, knowledge-graph lookup, semantic retrieval, and answer synthesis while the interface shows the evidence used at each stage.
 
-The application lets a user ask natural-language questions and receive responses grounded in retrieved context. The backend combines:
+The repository is Ethan Villalovoz's maintained fork of a Washington State University senior design capstone built for [HackerEarth](https://www.hackerearth.com/). The original team was Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
 
-- **Vector search:** FAISS index over Wikipedia embeddings.
-- **Embedding model:** SentenceTransformers for semantic retrieval.
-- **Knowledge graph:** DBpedia SPARQL queries for structured context.
-- **LLM layer:** OpenAI chat completion with retrieved evidence.
-- **Frontend:** React chat interface for user queries and generated responses.
+## System
 
-## Architecture
-
-```text
-frontend/rag-app         React + TypeScript user interface
-backend/app/main.py      FastAPI application entrypoint
-backend/app/routers      API routes for NLP, DBpedia, and vector search
-backend/app/handlers     LLM, embedding, and vector search logic
-backend/app/data_processing
-                         dataset extraction and embedding assets
-tests                    backend unit and integration tests
-docs                     meeting notes, sprint reports, code guides, and reports
+```mermaid
+flowchart LR
+    Q[Question] --> N[spaCy entity extraction]
+    N --> K[DBpedia SPARQL]
+    Q --> E[SentenceTransformer embedding]
+    E --> V[FAISS vector search]
+    K --> G[Grounded prompt]
+    V --> G
+    G --> O[OpenAI response]
 ```
 
-## Quick Start With Docker
+| Layer | Responsibility |
+| --- | --- |
+| React + TypeScript | Conversation, source context, and retrieval trace |
+| FastAPI | Validated API boundary and orchestration |
+| SentenceTransformers + FAISS | Dense semantic retrieval over Wikipedia passages |
+| DBpedia | Explicit entity and relationship context through SPARQL |
+| OpenAI | Concise synthesis over retrieved evidence |
 
-Docker is the easiest way to run the full app because the backend depends on large embedding and FAISS index files.
+## Run The Interface
 
-1. Create a local environment file:
+The frontend includes a deterministic demo dataset, so the product can be evaluated without credentials or multi-gigabyte retrieval artifacts.
+
+```bash
+cd frontend/rag-app
+npm ci
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). Demo mode is labeled in the interface and never pretends to be a live model response.
+
+## Run The Full Pipeline
+
+1. Copy the environment template and set an OpenAI API key.
 
    ```bash
    cp .env.example .env
    ```
 
-2. Add your OpenAI API key to `.env`:
+2. Download and checksum the versioned Wikipedia corpus files.
 
    ```bash
-   OPENAI_API_KEY=sk-your-key-here
+   python3 scripts/download_corpus.py
    ```
 
-3. Build and start the app:
+3. Download `text_embeddings.npy` and `index.faiss` from the [project dataset](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main) into `backend/app/data_processing/embeddings_data/`.
+
+4. Start both services.
 
    ```bash
    docker compose up --build
    ```
 
-4. Open the app:
+The frontend runs at [http://localhost:3000](http://localhost:3000), the API at [http://localhost:8000](http://localhost:8000), and interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-   - Frontend: [http://localhost:3000](http://localhost:3000)
-   - Backend API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-To stop the app:
+For direct backend development:
 
 ```bash
-docker compose down
-```
-
-## Local Development
-
-### Prerequisites
-
-- Python 3.10
-- Node.js 20.19+ or 22+
-- OpenAI API key
-
-### Backend
-
-From the repository root:
-
-```bash
-python3 -m venv .venv
+python3.10 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r backend/requirements.txt
-export OPENAI_API_KEY=sk-your-key-here
-export PYTHONPATH=$(pwd)
+pip install -r backend/requirements-dev.txt
 uvicorn backend.app.main:app --reload
 ```
 
-The vector search runtime also needs the large embedding files from the project dataset:
+## Repository Map
 
-- Download `text_embeddings.npy` from the [Hugging Face dataset](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main) into `backend/app/data_processing/embeddings_data/`.
-- Download `index.faiss` into `backend/app/data_processing/vector_search_data/`.
-
-### Frontend
-
-In a second terminal:
-
-```bash
-cd frontend/rag-app
-npm ci
-npm start
+```text
+backend/app/handlers       LLM, embedding, and vector-search services
+backend/app/routers        FastAPI route boundaries
+backend/app/data_processing
+                           dataset preparation utilities and local artifacts
+frontend/rag-app/src       typed product interface and deterministic demo
+tests                      backend unit and integration coverage
+docs                       reports, code guides, and project history
 ```
 
-The frontend runs at [http://localhost:3000](http://localhost:3000) and expects the backend at [http://localhost:8000](http://localhost:8000).
-
-## Testing
-
-Backend:
+## Verification
 
 ```bash
-CI=true PYTHONPATH=. pytest tests/
+CI=true PYTHONPATH=. pytest -q tests/
+cd frontend/rag-app && npm run check
 ```
 
-Frontend:
+CI runs both suites on every pull request. Service initialization is lazy, so unit tests do not download an embedding or generation model unless a test explicitly exercises it.
 
-```bash
-cd frontend/rag-app
-npm test
-npm run build
-```
+## Design Decisions
 
-`CI=true` lets the backend tests avoid requiring a real OpenAI API key.
+- **Inspectable by default:** sources and retrieval stages stay adjacent to the answer.
+- **Honest offline mode:** contributors can review the product without an API key; live and fixture data are visibly distinct.
+- **Constrained boundaries:** query lengths, source counts, CORS origins, and public error messages are validated at the API edge.
+- **Large artifacts out of Git:** corpus parquet files are checksum-verified release assets; the FAISS index and embedding matrix remain in the project dataset.
 
-## Documentation
+## Limitations
 
-- [Sprint reports](docs/sprint-reports/)
-- [Meeting notes](docs/meeting-notes/)
-- [Code guides](docs/code-guides/)
-- [Demo strategy](docs/demo-strategy.md)
+- Retrieval quality depends on corpus coverage, chunking, and similarity thresholds.
+- DBpedia can return sparse results for ambiguous or uncommon entities.
+- Exposing evidence improves inspectability but does not guarantee factual correctness.
+- The included demo is a product fixture, not an evaluation of the full retrieval pipeline.
+
+## Project Record
+
+- [Demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
+- [Final report](docs/project-report/RAGApp-FinalReport.pdf)
+- [Project abstract](docs/project-report/Project-Abstract.pdf)
 - [Performance notes](docs/performance-stats.md)
-- [Final project report](docs/project-report/RAGApp-FinalReport.pdf)
-- [Final client presentation](docs/project-report/final_client_presentation_ragapp.pdf)
-
-## Known Limitations
-
-- Vector search quality depends heavily on embedding coverage, chunking strategy, and threshold tuning.
-- DBpedia SPARQL queries can fail or return sparse context for ambiguous entities.
-- The project prototype uses large local embedding artifacts that are not committed to the repository.
-- Some generated responses may still be limited by retrieval quality or missing source coverage.
-
-## Credits
-
-This project was developed as a WSU senior design capstone project for HackerEarth by Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
+- [Sprint reports](docs/sprint-reports/)
 
 ## License
 
-This project is licensed under the terms in [LICENSE](LICENSE).
+Source code is licensed under the terms in [LICENSE](LICENSE). Original team attribution is preserved above and in the project reports. The separately distributed corpus has additional provenance and reuse terms in [DATA_NOTICE.md](DATA_NOTICE.md).

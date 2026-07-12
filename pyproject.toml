@@ -4,8 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-graph-rag-assistant"
-version = "0.1.0"
-description = "WSU senior design capstone RAG prototype for HackerEarth using FastAPI, React, DBpedia, FAISS, and OpenAI"
+version = "1.1.0"
+description = "Evidence-aware research assistant using FastAPI, React, DBpedia, FAISS, and OpenAI"
+requires-python = ">=3.10,<3.13"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
 
 [tool.setuptools.packages.find]
 where = ["."]

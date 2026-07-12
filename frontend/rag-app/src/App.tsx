@@ -1,271 +1,148 @@
-import React, { useState, FormEvent } from 'react';
-import './App.css';
+import { FormEvent, useMemo, useRef, useState } from "react";
 
-// components
-import Loading from "./components/Loading"; 
+import { isDemoMode, runResearch } from "./api/research";
+import { Composer } from "./components/Composer";
+import { Conversation } from "./components/Conversation";
+import { EvidencePanel } from "./components/EvidencePanel";
+import type { ChatMessage, ResearchSource, RetrievalStep } from "./types";
+import "./App.css";
 
-type Message = {
-  text: string;
-  sender: 'user' | 'bot';
-};
+const SUGGESTIONS = [
+  "How does retrieval-augmented generation reduce hallucinations?",
+  "Compare vector search with knowledge-graph retrieval.",
+  "What makes a useful semantic embedding?",
+];
 
-type Entity = {
-  text: string;
-  label: string;
-};
-
-type NlpData = {
-  tokens: string[];
-  entities: Entity[];
-  is_harmful: boolean;
-  sparql_query: string;
-};
+function createMessage(role: ChatMessage["role"], content: string): ChatMessage {
+  return {
+    id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    role,
+    content,
+  };
+}
 
 function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [userMessage, setUserMessage] = useState('');
-  const [loading, setLoading] = useState(false); // loading state for response
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [query, setQuery] = useState("");
+  const [sources, setSources] = useState<ResearchSource[]>([]);
+  const [steps, setSteps] = useState<RetrievalStep[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const requestId = useRef(0);
 
-  const callNlpEndpoint = async (query: string): Promise<NlpData> => {
+  const modeLabel = useMemo(
+    () => (isDemoMode ? "Demo dataset" : "Connected to API"),
+    [],
+  );
+
+  async function submitQuery(nextQuery: string) {
+    const normalizedQuery = nextQuery.trim();
+    if (!normalizedQuery || isLoading) return;
+
+    const activeRequest = ++requestId.current;
+    setMessages((current) => [
+      ...current,
+      createMessage("user", normalizedQuery),
+    ]);
+    setQuery("");
+    setError(null);
+    setSources([]);
+    setSteps([
+      { id: "query", label: "Understand query", status: "active" },
+      { id: "graph", label: "Query knowledge graph", status: "pending" },
+      { id: "vector", label: "Retrieve semantic context", status: "pending" },
+      { id: "answer", label: "Synthesize answer", status: "pending" },
+    ]);
+    setIsLoading(true);
+
     try {
-      const response = await fetch('http://localhost:8000/nlp/process_query', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
+      const result = await runResearch(normalizedQuery, (nextSteps) => {
+        if (requestId.current === activeRequest) setSteps(nextSteps);
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
-        throw new Error('Error: Unable to process the query.');
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error('Error: Unable to connect to the server.');
-      } else {
-        throw error;
-      }
-    }
-  };
-
-  const callDbpediaFunction = async (sparqlQuery: string): Promise<any> => {
-    try {
-      const response = await fetch('http://localhost:8000/dbpedia/querykg', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: sparqlQuery }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error: Unable to process the DBpedia query.');
-      }
-  
-      return await response.json();
-    } catch (error) {
-      throw new Error(
-        `Error: Unable to connect to the DBpedia server. ${error instanceof Error ? error.message : ''}`
+      if (requestId.current !== activeRequest) return;
+      setMessages((current) => [
+        ...current,
+        createMessage("assistant", result.answer),
+      ]);
+      setSources(result.sources);
+      setSteps(result.steps);
+    } catch (requestError) {
+      if (requestId.current !== activeRequest) return;
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "The research pipeline could not complete this request.",
       );
-    }
-  };
-  
-  const callVectorSearchFunction = async (query: string): Promise<{ results: string[]; similarities: number[] }> => {
-    try {
-      const response = await fetch('http://localhost:8000/vector_search/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          query_text: query
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error: Unable to process the vector search query.');
-      }
-  
-      const data = await response.json();
-      return {
-        results: data.results.map((result: { text: string }) => result.text),
-        similarities: data.results.map((result: { similarity: number }) => result.similarity),
-      };
-    } catch (error) {
-      throw new Error(
-        `Error: Unable to connect to the vector search server. ${error instanceof Error ? error.message : ''}`
+      setSteps((current) =>
+        current.map((step) =>
+          step.status === "active" ? { ...step, status: "error" } : step,
+        ),
       );
+    } finally {
+      if (requestId.current === activeRequest) setIsLoading(false);
     }
-  };
+  }
 
-  const callLlmRespond = async (
-    query: string,
-    vectorResults: string[],
-    kgContext: string
-  ): Promise<string> => {
-    try {
-      const response = await fetch('http://localhost:8000/nlp/llm_response', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: query,
-          vector_search_results: vectorResults,
-          kg_results: kgContext,
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error: Unable to process the LLM query.');
-      }
-            
-      const data = await response.json();
-      return data.response;
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void submitQuery(query);
+  }
 
-    } catch (error) {
-      throw new Error(
-        `Error: Unable to connect to the LLM server. ${error instanceof Error ? error.message : ''}`
-      );
-    }
-  };
-  
-    
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (userMessage.trim() === '') return;
-  
-    // Add user's message to the chat
-    const newMessage: Message = {
-      text: userMessage,
-      sender: 'user',
-    };
-  
-    setMessages([...messages, newMessage]);
-    setUserMessage('');
-    setLoading(true);
-  
-    try {
-      console.log('User Input: ', userMessage);
-      const startTime = performance.now();
-
-      // Natural Language Processing
-      const nlpStartTime = performance.now();
-      const nlpData = await callNlpEndpoint(userMessage);
-      const botMessage: Message = {
-        text: `Tokens: ${nlpData.tokens.join(', ')}\nEntities: ${nlpData.entities.map((ent: Entity) => ent.text).join(', ')}\nIs Harmful: ${nlpData.is_harmful}\nSPARQL: ${nlpData.sparql_query}`,
-        sender: 'bot',
-      };
-      // setMessages((prevMessages) => [...prevMessages, botMessage]); // 
-      const nlpEndTime = performance.now();
-      console.log(`NLP output: ${botMessage.text}`);
-      console.log(`NLP Time: ${nlpEndTime - nlpStartTime} ms`);
-  
-      // DBpedia Query
-      const kgStartTime = performance.now();
-      let dbpediaMessage: Message = {text: "", sender: "bot"}
-      if (nlpData.sparql_query) {
-        const dbpediaData = await callDbpediaFunction(nlpData.sparql_query);
-        
-        // Ensure dbpeida data has valid structure and text
-        const firstBinding = dbpediaData?.results?.bindings?.[0];
-        const abstractText = firstBinding?.abstract?.value || "No abstract available.";      
-
-        dbpediaMessage = {
-          text: `DBpedia Abstract: ${abstractText}`,
-          sender: 'bot',
-        };
-        // setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
-      }
-      const kgEndTime = performance.now();
-      console.log(`DBPedia output: ${dbpediaMessage.text}`);
-      console.log(`DBpedia Time: ${kgEndTime - kgStartTime} ms`);
-  
-      // Vector Search
-      const vectorSearchStartTime = performance.now();
-      const vectorData = await callVectorSearchFunction(userMessage);
-      const vectorMessage: Message = {
-        text: `Vector Search Results:\n${vectorData.results.join('\n')}`,
-        sender: 'bot',
-      };
-      // setMessages((prevMessages) => [...prevMessages, vectorMessage]);
-      const vectorSearchEndTime = performance.now();
-      console.log(`VS output: ${vectorMessage.text}`);
-      console.log(`Vector Search Time: ${vectorSearchEndTime - vectorSearchStartTime} ms`);  
-
-      // Call LLM endpoint
-      const llmStartTime = performance.now();
-      console.log(vectorData.results)
-      const llmResponse = await callLlmRespond(userMessage, vectorData.results, dbpediaMessage.text)  
-      console.log(`LLM Response: ${llmResponse}`);
-      const llmMessage: Message = {
-        text: `${llmResponse}`,
-        sender: 'bot',
-      };
-  
-      setMessages((prevMessages) => [...prevMessages, llmMessage]);
-      const llmEndTime = performance.now();
-      console.log(`LLM Response Time: ${llmEndTime - llmStartTime} ms`);
-
-      const endTime = performance.now();
-      console.log(`Total Time: ${endTime - startTime} ms`);
-  
-    } catch (error) {
-      const errorMessage: Message = {
-        text: error instanceof Error ? error.message : 'An unknown error occurred.',
-        sender: 'bot',
-      };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
-    }
-    finally {
-      setLoading(false);
-    }
-  };
-  
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      {/* Chat box container */}
-      <div className="flex flex-col w-full max-w-lg h-[600px] bg-white shadow-lg rounded-lg overflow-hidden">
-        {/* Chat window */}
-        <div className="flex-grow p-4 overflow-y-auto bg-gray-50">
-          <div className="space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`p-3 rounded-lg shadow ${message.sender === 'user'
-                    ? 'bg-blue-500 text-white self-end'
-                    : 'bg-gray-300 text-gray-800 self-start'
-                  }`}
-              >
-                {message.text}
-              </div>
-            ))}
-            {loading && <Loading loadingText="Thinking" />} {/* Show loading indicator while processing query*/}
-          </div>
+    <div className="app-shell">
+      <header className="topbar">
+        <a className="brand" href="/" aria-label="Knowledge Graph RAG home">
+          <span className="brand-mark" aria-hidden="true">
+            KG
+          </span>
+          <span>
+            <strong>Knowledge Graph RAG</strong>
+            <small>Evidence-aware research assistant</small>
+          </span>
+        </a>
+        <div className="topbar-actions">
+          <span className="mode-indicator">
+            <span aria-hidden="true" />
+            {modeLabel}
+          </span>
+          <a
+            className="repository-link"
+            href="https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Repository
+          </a>
         </div>
+      </header>
 
-        {/* Input box */}
-        <form onSubmit={handleSubmit} className="p-4 bg-gray-200 border-t border-gray-300">
-          <div className="flex">
-            <input
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-grow p-3 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="submit"
-              className="ml-4 px-6 py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-200"
-            >
-              Send
-            </button>
-          </div>
-        </form>
-      </div>
+      <main className="workspace">
+        <section className="conversation-region" aria-label="Research conversation">
+          <Conversation
+            messages={messages}
+            suggestions={SUGGESTIONS}
+            isLoading={isLoading}
+            error={error}
+            onSuggestion={submitQuery}
+          />
+          <Composer
+            value={query}
+            isLoading={isLoading}
+            onChange={setQuery}
+            onSubmit={handleSubmit}
+          />
+        </section>
+
+        <EvidencePanel steps={steps} sources={sources} />
+      </main>
+
+      {isDemoMode && (
+        <p className="demo-disclosure">
+          Demo mode uses deterministic sample evidence. Configure
+          <code> VITE_API_BASE_URL </code> to run the full pipeline.
+        </p>
+      )}
     </div>
   );
 }

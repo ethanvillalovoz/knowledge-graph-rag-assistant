@@ -1,17 +1,24 @@
+import logging
+from functools import lru_cache
+
 import spacy
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from backend.app.models.basic_query import Query
 from backend.app.handlers.llm_handler import LLMHandler
 
 router = APIRouter()
-nlp = spacy.load("en_core_web_sm")
+logger = logging.getLogger(__name__)
 
-# Initialize LLM handler
-llm_handler = LLMHandler()
 
-#######################################################################
-### TODO: Refactor to separate NLP handler code and the router code ###
-#######################################################################
+@lru_cache
+def get_nlp():
+    return spacy.load("en_core_web_sm")
+
+
+@lru_cache
+def get_llm_handler():
+    return LLMHandler()
+
 
 def detect_harmful_intent(doc):
     '''
@@ -53,7 +60,7 @@ def generate_sparql_query(entities):
     '''
 
     if entities:
-        entity = entities[0]["text"]
+        entity = entities[0]["text"].replace("\\", "\\\\").replace('"', '\\"')
         return f"""
         SELECT ?abstract WHERE {{
             ?subject rdfs:label "{entity}"@en .
@@ -73,7 +80,7 @@ def process_query(query: Query):
     :return: <dict> Dictionary with tokens, entities, harmful intent status, and a SPARQL query if applicable.
     '''
 
-    doc = nlp(query.query)
+    doc = get_nlp()(query.query)
     tokens = tokenize_text(doc)
     entities = extract_entities(doc)
     is_harmful = detect_harmful_intent(doc)
@@ -100,18 +107,12 @@ def llm_respond(query: Query):
     try:
         # Format query and get LLM response
         formatted_query = llm_handler.format_query(query.query, query.vector_search_results, query.kg_results)
-        response = llm_handler.query_llm(formatted_query)
+        response = get_llm_handler().query_llm(formatted_query)
 
         return { "response": response }
 
-    except ValueError as ve:
-        # Handle specific value-related errors
-        return {"error": "Value error encountered", "details": str(ve)}, 400
-
-    except AttributeError as ae:
-        # Handle attribute-related errors
-        return {"error": "Attribute error encountered", "details": str(ae)}, 400
-
-    except Exception as e:
-        # Catch any other exceptions and return a generic error response
-        return {"error": "An unexpected error occurred", "details": str(e)}, 500
+    except (ValueError, AttributeError) as exc:
+        raise HTTPException(status_code=400, detail="The request could not be processed.") from exc
+    except Exception as exc:
+        logger.exception("LLM response generation failed")
+        raise HTTPException(status_code=502, detail="Response generation is unavailable.") from exc
