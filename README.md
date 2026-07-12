@@ -54,9 +54,15 @@ Open [http://localhost:3000](http://localhost:3000). Demo mode is labeled in the
    cp .env.example .env
    ```
 
-2. Download `text_embeddings.npy` and `index.faiss` from the [project dataset](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main) into the paths documented in `.env.example`.
+2. Download and checksum the versioned Wikipedia corpus files.
 
-3. Start both services.
+   ```bash
+   python3 scripts/download_corpus.py
+   ```
+
+3. Download `text_embeddings.npy` and `index.faiss` from the [project dataset](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main) into `backend/app/data_processing/embeddings_data/`.
+
+4. Start both services.
 
    ```bash
    docker compose up --build
@@ -99,7 +105,7 @@ CI runs both suites on every pull request. Service initialization is lazy, so un
 - **Inspectable by default:** sources and retrieval stages stay adjacent to the answer.
 - **Honest offline mode:** contributors can review the product without an API key; live and fixture data are visibly distinct.
 - **Constrained boundaries:** query lengths, source counts, CORS origins, and public error messages are validated at the API edge.
-- **Large artifacts out of Git:** the FAISS index and embedding matrix are distributed separately rather than buried in repository history.
+- **Large artifacts out of Git:** corpus parquet files are checksum-verified release assets; the FAISS index and embedding matrix remain in the project dataset.
 
 ## Limitations
 
