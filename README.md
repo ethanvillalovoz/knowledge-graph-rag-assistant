@@ -124,4 +124,4 @@ CI runs both suites on every pull request. Service initialization is lazy, so un
 
 ## License
 
-Licensed under the terms in [LICENSE](LICENSE). Original team attribution is preserved above and in the project reports.
+Source code is licensed under the terms in [LICENSE](LICENSE). Original team attribution is preserved above and in the project reports. The separately distributed corpus has additional provenance and reuse terms in [DATA_NOTICE.md](DATA_NOTICE.md).
