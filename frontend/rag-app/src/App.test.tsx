@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import App from "./App";
@@ -11,7 +11,7 @@ describe("Knowledge Graph RAG workspace", () => {
   test("renders a usable demo workspace without backend configuration", () => {
     render(<App />);
 
-    expect(screen.getByRole("heading", { name: /ask, retrieve, inspect/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /research query/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/ask the knowledge base/i)).toBeInTheDocument();
     expect(screen.getByText(/demo mode uses deterministic sample evidence/i)).toBeInTheDocument();
   });
@@ -25,7 +25,9 @@ describe("Knowledge Graph RAG workspace", () => {
         name: /compare vector search with knowledge-graph retrieval/i,
       }),
     );
-    await vi.advanceTimersByTimeAsync(2_000);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2_000);
+    });
 
     expect(screen.getByText(/vector search finds passages/i)).toBeInTheDocument();
     expect(screen.getByText(/3 sources/i)).toBeInTheDocument();

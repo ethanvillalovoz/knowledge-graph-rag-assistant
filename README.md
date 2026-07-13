@@ -5,7 +5,9 @@ An evidence-aware research workspace that combines dense retrieval, DBpedia know
 [![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 
-![Knowledge Graph RAG answering a technical question while exposing its retrieval trace](docs/media/rag-workspace.gif)
+[![Knowledge Graph RAG answering a technical question while exposing its evidence topology](docs/media/rag-poster.webp)](docs/media/rag-demo.mp4)
+
+Select the preview to watch a query move through the visible retrieval trace into a source-constrained answer. The included evidence is a deterministic product fixture, not a live model evaluation.
 
 ## Why This Exists
 

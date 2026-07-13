@@ -19,12 +19,10 @@ export function Conversation({
     <div className="conversation-scroll" aria-live="polite">
       {messages.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-index">01 / Research workspace</span>
-          <h1>Ask, retrieve, inspect.</h1>
+          <h1>Research query</h1>
           <p>
-            Questions are answered with semantic passages and structured
-            knowledge-graph context. The retrieval trace remains visible beside
-            the conversation.
+            Ask a technical question, then inspect the passages, graph entities,
+            and retrieval stages used to answer it.
           </p>
           <div className="suggestion-list" aria-label="Suggested questions">
             {suggestions.map((suggestion) => (
@@ -34,7 +32,7 @@ export function Conversation({
                 onClick={() => onSuggestion(suggestion)}
               >
                 <span>{suggestion}</span>
-                <span aria-hidden="true">Ask</span>
+                <span aria-hidden="true">&#8594;</span>
               </button>
             ))}
           </div>

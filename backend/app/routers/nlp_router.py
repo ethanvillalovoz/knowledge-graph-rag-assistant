@@ -105,9 +105,13 @@ def llm_respond(query: Query):
     :return: <string> LLM response or an error message.
     """
     try:
-        # Format query and get LLM response
-        formatted_query = llm_handler.format_query(query.query, query.vector_search_results, query.kg_results)
-        response = get_llm_handler().query_llm(formatted_query)
+        handler = get_llm_handler()
+        formatted_query = handler.format_query(
+            query.query,
+            query.vector_search_results,
+            query.kg_results,
+        )
+        response = handler.query_llm(formatted_query)
 
         return { "response": response }
 

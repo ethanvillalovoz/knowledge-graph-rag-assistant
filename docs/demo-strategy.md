@@ -4,7 +4,8 @@ Knowledge Graph RAG Assistant is best presented through the existing project dem
 
 ## Current Public Demo
 
-- Primary demo: [Project demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
+- Primary repository preview: `docs/media/rag-demo.mp4`, captured from the running deterministic frontend at 1280 x 720.
+- Original capstone demo: [Project demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
 - Supporting artifacts:
   - `docs/project-report/RAGApp-FinalReport.pdf`
   - `docs/project-report/final_client_presentation_ragapp.pdf`
@@ -24,9 +25,13 @@ GitHub Pages only hosts static files. It cannot run:
 
 For that reason, a GitHub Pages link would only be a static walkthrough unless the backend, vector artifacts, and model/API dependencies were hosted elsewhere.
 
-## Recommended Public Demo Format
+## Public Preview Contract
 
-The existing demo video is the right public artifact. If refreshed later, a strong walkthrough should show:
+The README preview shows a question, the in-progress retrieval state, the completed evidence topology, the four-stage trace, and source context. It is explicitly labeled as a demo dataset. `docs/media/rag-poster.webp` preserves the final trace for surfaces that do not play video.
+
+## Recommended Live Demo Format
+
+A refreshed live walkthrough should show:
 
 1. Starting the app with Docker.
 2. Asking a natural-language question.

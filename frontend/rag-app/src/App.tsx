@@ -4,6 +4,7 @@ import { isDemoMode, runResearch } from "./api/research";
 import { Composer } from "./components/Composer";
 import { Conversation } from "./components/Conversation";
 import { EvidencePanel } from "./components/EvidencePanel";
+import { GraphCanvas } from "./components/GraphCanvas";
 import type { ChatMessage, ResearchSource, RetrievalStep } from "./types";
 import "./App.css";
 
@@ -93,12 +94,10 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <a className="brand" href="/" aria-label="Knowledge Graph RAG home">
-          <span className="brand-mark" aria-hidden="true">
-            KG
-          </span>
+          <span className="brand-network" aria-hidden="true"><i /><i /><i /></span>
           <span>
             <strong>Knowledge Graph RAG</strong>
-            <small>Evidence-aware research assistant</small>
+            <small>Traceable retrieval workspace</small>
           </span>
         </a>
         <div className="topbar-actions">
@@ -134,7 +133,10 @@ function App() {
           />
         </section>
 
-        <EvidencePanel steps={steps} sources={sources} />
+        <div className="analysis-region">
+          <GraphCanvas steps={steps} sources={sources} />
+          <EvidencePanel steps={steps} sources={sources} />
+        </div>
       </main>
 
       {isDemoMode && (
