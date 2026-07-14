@@ -31,14 +31,14 @@ jobs:
           echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         env:
           REPO_LC: ${{ env.REPO_LC }}
         with:
@@ -48,7 +48,7 @@ jobs:
           tags: ghcr.io/${{ env.REPO_LC }}-backend:latest
 
       - name: Build and push Frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         env:
           REPO_LC: ${{ env.REPO_LC }}
         with:
