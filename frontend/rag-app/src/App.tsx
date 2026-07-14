@@ -94,7 +94,13 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <a className="brand" href="/" aria-label="Knowledge Graph RAG home">
-          <span className="brand-network" aria-hidden="true"><i /><i /><i /></span>
+          <img
+            className="brand-logo"
+            src="/meca-network.png"
+            alt=""
+            width="38"
+            height="38"
+          />
           <span>
             <strong>Knowledge Graph RAG</strong>
             <small>Traceable retrieval workspace</small>

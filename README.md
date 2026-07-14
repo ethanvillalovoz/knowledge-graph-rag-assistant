@@ -5,9 +5,9 @@ An evidence-aware research workspace that combines dense retrieval, DBpedia know
 [![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 
-https://github.com/user-attachments/assets/1d0f833a-9acb-4c8a-a99f-b0e8068ac80b
+[![Knowledge Graph RAG demo: compare retrieval paths and inspect the evidence trace](docs/media/rag-demo.gif)](docs/media/rag-demo.mp4)
 
-The recording follows a query through the visible retrieval trace into a source-constrained answer. The included evidence is a deterministic product fixture, not a live model evaluation. The tracked [MP4](docs/media/rag-demo.mp4) and [poster](docs/media/rag-poster.webp) preserve the source capture.
+A query moves through a visible retrieval trace before the workspace produces a source-constrained answer. The evidence is a deterministic product fixture, not a live model evaluation. [MP4 demo](docs/media/rag-demo.mp4) · [poster frame](docs/media/rag-poster.webp)
 
 ## Why This Exists
 
@@ -17,16 +17,7 @@ The repository is Ethan Villalovoz's maintained fork of a Washington State Unive
 
 ## System
 
-```mermaid
-flowchart LR
-    Q[Question] --> N[spaCy entity extraction]
-    N --> K[DBpedia SPARQL]
-    Q --> E[SentenceTransformer embedding]
-    E --> V[FAISS vector search]
-    K --> G[Grounded prompt]
-    V --> G
-    G --> O[OpenAI response]
-```
+![Hybrid retrieval system: a question branches through spaCy and DBpedia as well as SentenceTransformers and FAISS before both evidence paths meet in a grounded prompt](docs/media/system.png)
 
 | Layer | Responsibility |
 | --- | --- |
