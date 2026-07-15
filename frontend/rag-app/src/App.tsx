@@ -26,6 +26,7 @@ function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [query, setQuery] = useState("");
   const [sources, setSources] = useState<ResearchSource[]>([]);
+  const [selectedSourceId, setSelectedSourceId] = useState<string | null>(null);
   const [steps, setSteps] = useState<RetrievalStep[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +49,7 @@ function App() {
     setQuery("");
     setError(null);
     setSources([]);
+    setSelectedSourceId(null);
     setSteps([
       { id: "query", label: "Understand query", status: "active" },
       { id: "graph", label: "Query knowledge graph", status: "pending" },
@@ -67,6 +69,7 @@ function App() {
         createMessage("assistant", result.answer),
       ]);
       setSources(result.sources);
+      setSelectedSourceId(result.sources[0]?.id ?? null);
       setSteps(result.steps);
     } catch (requestError) {
       if (requestId.current !== activeRequest) return;
@@ -140,8 +143,18 @@ function App() {
         </section>
 
         <div className="analysis-region">
-          <GraphCanvas steps={steps} sources={sources} />
-          <EvidencePanel steps={steps} sources={sources} />
+          <GraphCanvas
+            onSourceSelect={setSelectedSourceId}
+            selectedSourceId={selectedSourceId}
+            steps={steps}
+            sources={sources}
+          />
+          <EvidencePanel
+            onSourceSelect={setSelectedSourceId}
+            selectedSourceId={selectedSourceId}
+            steps={steps}
+            sources={sources}
+          />
         </div>
       </main>
 

@@ -1,11 +1,18 @@
 import type { ResearchSource, RetrievalStep } from "../types";
 
 type EvidencePanelProps = {
+  onSourceSelect: (sourceId: string) => void;
+  selectedSourceId: string | null;
   steps: RetrievalStep[];
   sources: ResearchSource[];
 };
 
-export function EvidencePanel({ steps, sources }: EvidencePanelProps) {
+export function EvidencePanel({
+  onSourceSelect,
+  selectedSourceId,
+  steps,
+  sources,
+}: EvidencePanelProps) {
   return (
     <aside className="evidence-panel" aria-label="Retrieved evidence">
       <div className="panel-heading">
@@ -39,17 +46,23 @@ export function EvidencePanel({ steps, sources }: EvidencePanelProps) {
         {sources.length ? (
           <ol className="source-list">
             {sources.map((source) => (
-              <li key={source.id}>
-                <div>
-                  <span className="source-kind">{source.kind}</span>
-                  {typeof source.score === "number" && (
-                    <span className="source-score">
-                      {Math.round(source.score * 100)}% match
-                    </span>
-                  )}
-                </div>
-                <strong>{source.title}</strong>
-                <p>{source.excerpt}</p>
+              <li className={selectedSourceId === source.id ? "is-selected" : ""} key={source.id}>
+                <button
+                  aria-pressed={selectedSourceId === source.id}
+                  onClick={() => onSourceSelect(source.id)}
+                  type="button"
+                >
+                  <span className="source-metadata">
+                    <span className="source-kind">{source.kind}</span>
+                    {typeof source.score === "number" && (
+                      <span className="source-score">
+                        {Math.round(source.score * 100)}% match
+                      </span>
+                    )}
+                  </span>
+                  <strong>{source.title}</strong>
+                  <p>{source.excerpt}</p>
+                </button>
               </li>
             ))}
           </ol>

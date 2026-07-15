@@ -1,23 +1,25 @@
 # Knowledge Graph RAG Assistant
 
-An evidence-aware research workspace that combines dense retrieval, DBpedia knowledge-graph context, and generated answers.
+This capstone started from a simple frustration: a RAG answer can sound confident while hiding what it retrieved. Here, the dense-search and DBpedia paths stay on screen, and each evidence node can be opened.
 
 [![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 
 [![Knowledge Graph RAG demo: compare retrieval paths and inspect the evidence trace](docs/media/rag-demo.gif)](docs/media/rag-demo.mp4)
 
-A query moves through a visible retrieval trace before the workspace produces a source-constrained answer. The evidence is a deterministic product fixture, not a live model evaluation. [MP4 demo](docs/media/rag-demo.mp4) · [poster frame](docs/media/rag-poster.webp)
+For the recording, a deterministic fixture supplies the retrieval trace so the source-selection interaction is reproducible. The clip demonstrates the interface; it does not score retrieval quality. [MP4 demo](docs/media/rag-demo.mp4) · [poster frame](docs/media/rag-poster.webp)
 
 ## Why This Exists
 
-Most chat interfaces hide the retrieval pipeline. This project keeps it visible. A question moves through entity extraction, knowledge-graph lookup, semantic retrieval, and answer synthesis while the interface shows the evidence used at each stage.
+Most chat interfaces collapse retrieval into a spinner. This one exposes entity extraction, graph lookup, semantic retrieval, and the evidence that survives into the answer prompt.
 
 The repository is Ethan Villalovoz's maintained fork of a Washington State University senior design capstone built for [HackerEarth](https://www.hackerearth.com/). The original team was Molly Iverson, Ethan Villalovoz, Chandler Juego, and Adam Shtrikman.
 
 ## System
 
-![Hybrid retrieval system: a question branches through spaCy and DBpedia as well as SentenceTransformers and FAISS before both evidence paths meet in a grounded prompt](docs/media/system.png)
+[![Hybrid retrieval system: a question branches through spaCy and DBpedia as well as SentenceTransformers and FAISS before both evidence paths meet in a grounded prompt](docs/media/retrieval-flow.svg)](docs/media/retrieval-flow.excalidraw)
+
+Open the diagram to inspect or edit the Excalidraw source.
 
 | Layer | Responsibility |
 | --- | --- |

@@ -354,93 +354,101 @@
   background: #efede6;
 }
 
-.graph-map svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.graph-map .react-flow__pane {
+  cursor: grab;
 }
 
-.graph-map path {
-  fill: none;
-  stroke: #9a9a93;
-  stroke-dasharray: 5 5;
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+.graph-map .react-flow__pane:active {
+  cursor: grabbing;
 }
 
-.graph-map.has-results path {
-  stroke: var(--cobalt);
-  stroke-dasharray: 8 5;
-  animation: trace 900ms linear infinite;
-}
-
-.graph-node {
-  position: absolute;
-  display: grid;
-  min-height: 54px;
-  align-content: center;
-  gap: 2px;
-  padding: 8px 10px;
+.graph-map .react-flow__node {
+  width: 176px;
   border: 1px solid var(--ink);
+  border-radius: 0;
   background: #fff;
   box-shadow: 3px 3px 0 rgba(24, 24, 27, 0.14);
+  color: var(--ink);
+  font-family: inherit;
+  text-align: left;
 }
 
-.graph-node > span {
+.graph-map .react-flow__node.selectable {
+  cursor: pointer;
+}
+
+.graph-map .react-flow__node.selected,
+.graph-map .source-flow-node.is-selected {
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--cobalt), 3px 3px 0 rgba(24, 24, 27, 0.14);
+}
+
+.graph-map .query-flow-node,
+.graph-map .answer-flow-node {
+  width: 120px;
+}
+
+.graph-map .query-flow-node {
+  border-left: 6px solid var(--coral);
+}
+
+.graph-map .source-flow-node-1 {
+  border-left: 6px solid var(--lime);
+}
+
+.graph-map .source-flow-node-2 {
+  border-left: 6px solid var(--cyan);
+}
+
+.graph-map .source-flow-node-3 {
+  border-left: 6px solid var(--violet);
+}
+
+.graph-map .answer-flow-node {
+  border-left: 6px solid var(--cobalt);
+}
+
+.flow-node-label {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  padding: 8px 10px;
+}
+
+.flow-node-label > span {
   font-size: 8px;
   font-weight: 760;
 }
 
-.graph-node strong {
+.flow-node-label strong,
+.flow-node-label small {
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-node-label strong {
   font-size: 10px;
   font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.graph-node small {
-  overflow: hidden;
+.flow-node-label small {
   color: var(--muted);
   font-size: 8px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.query-node {
-  top: calc(50% - 27px);
-  left: 3%;
-  width: 112px;
-  border-left: 6px solid var(--coral);
+.graph-map .react-flow__edge-path {
+  stroke: #9a9a93;
+  stroke-width: 1.5;
 }
 
-.source-node {
-  left: 43%;
-  width: 190px;
-  transform: translateX(-50%);
+.graph-map.has-results .react-flow__edge-path,
+.graph-map.has-results .react-flow__arrowhead path {
+  stroke: var(--cobalt);
 }
 
-.node-1 {
-  top: 9%;
-  border-left: 6px solid var(--lime);
-}
-
-.node-2 {
-  top: calc(50% - 27px);
-  border-left: 6px solid var(--cyan);
-}
-
-.node-3 {
-  bottom: 9%;
-  border-left: 6px solid var(--violet);
-}
-
-.answer-node {
-  top: calc(50% - 27px);
-  right: 3%;
-  width: 112px;
-  border-left: 6px solid var(--cobalt);
+.graph-map .react-flow__controls-button {
+  border-color: var(--line);
+  border-radius: 0;
 }
 
 .evidence-panel {
@@ -543,16 +551,35 @@
 }
 
 .source-list li {
+  border-bottom: 1px solid var(--line);
+}
+
+.source-list button {
   display: grid;
+  width: 100%;
   min-width: 0;
   grid-template-columns: 130px minmax(150px, 0.7fr) minmax(220px, 1.3fr);
   align-items: start;
   gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 12px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: background-color 140ms ease, box-shadow 140ms ease;
 }
 
-.source-list li > div {
+.source-list button:hover,
+.source-list button:focus-visible,
+.source-list li.is-selected button {
+  outline: 0;
+  background: #efede6;
+  box-shadow: inset 3px 0 0 var(--cobalt);
+}
+
+.source-metadata {
   display: grid;
   gap: 5px;
 }
@@ -604,12 +631,6 @@
 @keyframes pulse {
   50% {
     opacity: 0.3;
-  }
-}
-
-@keyframes trace {
-  to {
-    stroke-dashoffset: -26;
   }
 }
 
@@ -675,20 +696,6 @@
     grid-template-rows: 420px auto;
   }
 
-  .graph-map svg {
-    opacity: 0.55;
-  }
-
-  .source-node {
-    left: 50%;
-    width: 150px;
-  }
-
-  .query-node,
-  .answer-node {
-    width: 86px;
-  }
-
   .trace-list,
   .source-list {
     grid-template-columns: 1fr;
@@ -703,12 +710,12 @@
     border-top: 0;
   }
 
-  .source-list li {
+  .source-list button {
     grid-template-columns: 1fr;
     gap: 6px;
   }
 
-  .source-list li > div {
+  .source-metadata {
     display: flex;
     justify-content: space-between;
     gap: 12px;
