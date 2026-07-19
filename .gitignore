@@ -45,6 +45,8 @@ yarn-error.log*
 text_embeddings.npy
 *.npy
 *.parquet
+backend/app/data_processing/embeddings_data/embeddings_pdf/*.pdf
+!backend/app/data_processing/embeddings_data/embeddings_pdf/README.md
 
 # Python packaging
 *.egg-info/

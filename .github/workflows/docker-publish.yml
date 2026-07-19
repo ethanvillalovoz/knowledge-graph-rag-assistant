@@ -25,6 +25,8 @@ jobs:
 
       - name: Check out the repo
         uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set lowercase repository name
         run: |
@@ -45,7 +47,9 @@ jobs:
           context: ./
           file: ./dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LC }}-backend:latest
+          tags: |
+            ghcr.io/${{ env.REPO_LC }}-backend:latest
+            ghcr.io/${{ env.REPO_LC }}-backend:${{ github.event.workflow_run.head_sha }}
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v7
@@ -55,4 +59,6 @@ jobs:
           context: ./frontend/rag-app
           file: ./frontend/rag-app/dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LC }}-frontend:latest
+          tags: |
+            ghcr.io/${{ env.REPO_LC }}-frontend:latest
+            ghcr.io/${{ env.REPO_LC }}-frontend:${{ github.event.workflow_run.head_sha }}

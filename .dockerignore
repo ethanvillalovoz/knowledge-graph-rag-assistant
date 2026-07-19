@@ -15,3 +15,5 @@ docs
 tests
 *.npy
 *.faiss
+backend/app/data_processing/pdf_data.parquet
+backend/app/data_processing/embeddings_data/embeddings_pdf/*.pdf
