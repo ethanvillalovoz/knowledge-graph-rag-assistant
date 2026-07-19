@@ -4,6 +4,7 @@ This capstone started from a simple frustration: a RAG answer can sound confiden
 
 [![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21445868.svg)](https://doi.org/10.5281/zenodo.21445868)
 
 [Project page](https://knowledge-graph-rag.github.io/) · [Technical report](docs/paper/knowledge-graph-rag-technical-report.pdf) · [Video](https://www.youtube.com/watch?v=YWdR3FAdq1o) · [Data](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/28777c9a144261672040710e0316ca5e40345172)
 
@@ -124,6 +125,7 @@ CI runs both suites on every pull request. Service initialization is lazy, so un
 
 - [Project page](https://knowledge-graph-rag.github.io/)
 - [Technical report](docs/paper/knowledge-graph-rag-technical-report.pdf)
+- [Archived software release v1.1.1](https://doi.org/10.5281/zenodo.21445868)
 - [Citation metadata](CITATION.cff)
 - [Demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
 - [Final report](docs/project-report/RAGApp-FinalReport.pdf)
@@ -132,6 +134,8 @@ CI runs both suites on every pull request. Service initialization is lazy, so un
 - [Sprint reports](docs/sprint-reports/)
 
 The technical report describes the capstone system preserved at commit [`1ad5cc0`](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/tree/1ad5cc08cbebdeae655cad626393364b2f476556). The current `main` branch is a maintained public fork and may contain later documentation, interface, dependency, and safety improvements. See [Reproducibility](docs/REPRODUCIBILITY.md) before comparing the report with the current runtime.
+
+For software use, cite the archived v1.1.1 release through its [Zenodo DOI](https://doi.org/10.5281/zenodo.21445868). For discussion of the capstone system or technical report, use the preferred report citation in [CITATION.cff](CITATION.cff).
 
 ## License
 
