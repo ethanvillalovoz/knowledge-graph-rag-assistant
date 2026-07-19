@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite the software record below. If you
+  discuss the capstone system or technical report, use the preferred citation.
+title: Knowledge Graph RAG Assistant
+type: software
+version: 1.1.0
+license: MIT
+repository-code: https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant
+url: https://knowledge-graph-rag.github.io/
+abstract: >-
+  An inspectable retrieval-augmented generation prototype combining dense
+  Wikipedia retrieval, DBpedia entity context, and answer synthesis.
+keywords:
+  - retrieval-augmented generation
+  - knowledge graph
+  - DBpedia
+  - FAISS
+  - FastAPI
+authors:
+  - family-names: Iverson
+    given-names: Molly
+  - family-names: Villalovoz
+    given-names: Ethan
+  - family-names: Juego
+    given-names: Chandler
+  - family-names: Shtrikman
+    given-names: Adam
+preferred-citation:
+  type: report
+  title: RAG Application Using Knowledge Graph and Vector Search
+  year: 2025
+  institution:
+    name: Washington State University
+  url: https://knowledge-graph-rag.github.io/
+  authors:
+    - family-names: Iverson
+      given-names: Molly
+    - family-names: Villalovoz
+      given-names: Ethan
+    - family-names: Juego
+      given-names: Chandler
+    - family-names: Shtrikman
+      given-names: Adam
+    - family-names: Aditya
+      given-names: Vikas
+    - family-names: Kumar
+      given-names: Parteek

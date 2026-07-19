@@ -16,7 +16,21 @@ TEXT_COLUMN = "text"  # Replace with the name of the column containing text
 BATCH_SIZE = 32  # Adjust based on your GPU/CPU memory
 SUBSET_SIZE = 1000  # Number of rows to use for embeddings
 
-nltk.download("punkt")  # Download the tokenizer models for chunking
+
+def ensure_sentence_tokenizer():
+    """Download NLTK sentence-tokenizer data only when chunking is requested."""
+    resources = (
+        ("tokenizers/punkt", "punkt"),
+        ("tokenizers/punkt_tab", "punkt_tab"),
+    )
+    for resource_path, package_name in resources:
+        try:
+            nltk.data.find(resource_path)
+        except LookupError:
+            if not nltk.download(package_name, quiet=True):
+                raise RuntimeError(
+                    f"Unable to download required NLTK resource: {package_name}"
+                )
 
 def extract_text_from_pdfs(dir):
     texts = []
@@ -67,6 +81,7 @@ def chunk_text(text, max_length=512, overlap=50):
     Returns:
         list: A list of text chunks.
     """
+    ensure_sentence_tokenizer()
     sentences = sent_tokenize(text)
     chunks = []
     current_chunk = []

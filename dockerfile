@@ -15,12 +15,18 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ /backend
 
+ARG EMBEDDING_DATASET_REVISION=b88b9c93be2943f05485874914af00c47b82fc18
+ARG EMBEDDINGS_SHA256=98592d86c93dbf474decba8b79426cd3c57c73c607b650692ce2df0398fbad74
+ARG FAISS_INDEX_SHA256=1e87e64080acfce1cbc3ecad2b3a8ae80900dde935135042dc2481675d340b1a
+
 RUN mkdir -p /backend/app/data_processing/vector_search_data \
     /backend/app/data_processing/embeddings_data \
     && wget -O /backend/app/data_processing/vector_search_data/index.faiss \
-    "https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/resolve/main/index.faiss" && \
-    wget -O /backend/app/data_processing/embeddings_data/text_embeddings.npy \
-    "https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/resolve/main/text_embeddings.npy"
+    "https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/resolve/${EMBEDDING_DATASET_REVISION}/index.faiss" \
+    && echo "${FAISS_INDEX_SHA256}  /backend/app/data_processing/vector_search_data/index.faiss" | sha256sum -c - \
+    && wget -O /backend/app/data_processing/embeddings_data/text_embeddings.npy \
+    "https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/resolve/${EMBEDDING_DATASET_REVISION}/text_embeddings.npy" \
+    && echo "${EMBEDDINGS_SHA256}  /backend/app/data_processing/embeddings_data/text_embeddings.npy" | sha256sum -c -
 
 ENV PYTHONPATH=/
 

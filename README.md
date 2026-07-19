@@ -5,6 +5,8 @@ This capstone started from a simple frustration: a RAG answer can sound confiden
 [![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 
+[Project page](https://knowledge-graph-rag.github.io/) · [Technical report](docs/paper/knowledge-graph-rag-technical-report.pdf) · [Video](https://www.youtube.com/watch?v=YWdR3FAdq1o) · [Data](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/b88b9c93be2943f05485874914af00c47b82fc18)
+
 [![Knowledge Graph RAG demo: compare retrieval paths and inspect the evidence trace](docs/media/rag-demo.gif)](docs/media/rag-demo.mp4)
 
 For the recording, a deterministic fixture supplies the retrieval trace so the source-selection interaction is reproducible. The clip demonstrates the interface; it does not score retrieval quality. [MP4 demo](docs/media/rag-demo.mp4) · [poster frame](docs/media/rag-poster.webp)
@@ -17,9 +19,9 @@ The repository is Ethan Villalovoz's maintained fork of a Washington State Unive
 
 ## System
 
-[![Hybrid retrieval system: a question branches through spaCy and DBpedia as well as SentenceTransformers and FAISS before both evidence paths meet in a grounded prompt](docs/media/retrieval-flow.svg)](docs/media/retrieval-flow.excalidraw)
+[![System overview: a question passes through spaCy, DBpedia, dense retrieval, prompt assembly, and generation before the prototype answer is returned](docs/media/system-overview-paper.svg)](docs/media/system-overview-paper.svg)
 
-Open the diagram to inspect or edit the Excalidraw source.
+The figure records the archived April 2025 query path. An [editable retrieval-flow diagram](docs/media/retrieval-flow.excalidraw) is also included for maintainers.
 
 | Layer | Responsibility |
 | --- | --- |
@@ -55,7 +57,16 @@ Open [http://localhost:3000](http://localhost:3000). Demo mode is labeled in the
    python3 scripts/download_corpus.py
    ```
 
-3. Download `text_embeddings.npy` and `index.faiss` from the [project dataset](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main) into `backend/app/data_processing/embeddings_data/`.
+3. When running the backend directly, download and checksum the two retrieval artifacts from the pinned [project dataset revision](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/b88b9c93be2943f05485874914af00c47b82fc18):
+
+   ```bash
+   python3 scripts/download_retrieval_artifacts.py
+   ```
+
+   - `text_embeddings.npy` → `backend/app/data_processing/embeddings_data/`
+   - `index.faiss` → `backend/app/data_processing/vector_search_data/`
+
+   Docker Compose users can skip this command: the backend image downloads this same revision and verifies both SHA-256 checksums during the build.
 
 4. Start both services.
 
@@ -83,7 +94,7 @@ backend/app/data_processing
                            dataset preparation utilities and local artifacts
 frontend/rag-app/src       typed product interface and deterministic demo
 tests                      backend unit and integration coverage
-docs                       reports, code guides, and project history
+docs                       paper, reports, code guides, and project history
 ```
 
 ## Verification
@@ -111,12 +122,17 @@ CI runs both suites on every pull request. Service initialization is lazy, so un
 
 ## Project Record
 
+- [Project page](https://knowledge-graph-rag.github.io/)
+- [Technical report](docs/paper/knowledge-graph-rag-technical-report.pdf)
+- [Citation metadata](CITATION.cff)
 - [Demo video](https://www.youtube.com/watch?v=YWdR3FAdq1o)
 - [Final report](docs/project-report/RAGApp-FinalReport.pdf)
 - [Project abstract](docs/project-report/Project-Abstract.pdf)
 - [Performance notes](docs/performance-stats.md)
 - [Sprint reports](docs/sprint-reports/)
 
+The technical report describes the capstone system preserved at commit [`1ad5cc0`](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/tree/1ad5cc08cbebdeae655cad626393364b2f476556). The current `main` branch is a maintained public fork and may contain later documentation, interface, dependency, and safety improvements. See [Reproducibility](docs/REPRODUCIBILITY.md) before comparing the report with the current runtime.
+
 ## License
 
-Source code is licensed under the terms in [LICENSE](LICENSE). Original team attribution is preserved above and in the project reports. The separately distributed corpus has additional provenance and reuse terms in [DATA_NOTICE.md](DATA_NOTICE.md).
+Source code is licensed under the terms in [LICENSE](LICENSE). Original team attribution is preserved above and in the project reports. Data and media have separate provenance or reuse conditions described in [DATA_NOTICE.md](DATA_NOTICE.md) and [ASSET_SOURCES.md](ASSET_SOURCES.md).
