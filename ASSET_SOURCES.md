@@ -19,9 +19,12 @@ model artifacts, or other third-party material.
 
 - Simple English Wikipedia-derived artifacts are subject to the provenance and
   reuse conditions in [DATA_NOTICE.md](DATA_NOTICE.md).
-- The FAISS index and embedding matrix are hosted separately on Hugging Face.
-  Their source-corpus limitations and missing historical provenance remain
-  applicable even though the binary files are checksum-pinned.
+- The FAISS index and embedding matrix are hosted in a project-owned,
+  [documented Hugging Face repository](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts).
+  Its dataset card preserves the original teammate-hosted repository and
+  revision as provenance. Source-corpus limitations and missing historical
+  provenance remain applicable even though the mirrored binary files are
+  byte-identical and checksum-pinned.
 - SentenceTransformers, spaCy, NLTK, DBpedia, OpenAI, and other dependencies or
   services retain their respective licenses and terms.
 

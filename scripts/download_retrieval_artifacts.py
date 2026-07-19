@@ -11,10 +11,10 @@ from pathlib import Path
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-DATASET_REVISION = "b88b9c93be2943f05485874914af00c47b82fc18"
+DATASET_REVISION = "550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62"
 DATASET_BASE_URL = (
-    "https://huggingface.co/datasets/miverson9/"
-    f"acme10-he-ragapp-embeddings/resolve/{DATASET_REVISION}"
+    "https://huggingface.co/datasets/ethanvillalovoz/"
+    f"knowledge-graph-rag-retrieval-artifacts/resolve/{DATASET_REVISION}"
 )
 
 

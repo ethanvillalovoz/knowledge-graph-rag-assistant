@@ -7,11 +7,13 @@ Wikipedia text is available under the [Creative Commons Attribution-ShareAlike L
 The exact Wikipedia snapshot date was not preserved in the original project record. Treat that missing provenance as a limitation when using these artifacts for evaluation or comparison. The files are provided as-is and should not be interpreted as a maintained or comprehensive encyclopedia dataset.
 
 The separately hosted `text_embeddings.npy` and `index.faiss` files are pinned
-to Hugging Face dataset revision
-`b88b9c93be2943f05485874914af00c47b82fc18` in the maintained setup. Pinning
-and checksumming these binaries detects later mutation; it does not recover the
-missing source-snapshot date, passage-construction environment, or all model
-runtime controls from the original capstone.
+to project-owned Hugging Face dataset revision
+[`550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62`](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62)
+in the maintained setup. This documented mirror preserves the original
+`miverson9/acme10-he-ragapp-embeddings` repository and revision as provenance.
+Pinning and checksumming the mirrored binaries detects later mutation; it does
+not recover the missing source-snapshot date, passage-construction environment,
+or all model runtime controls from the original capstone.
 
 Historical Requirements Engineering book chapters and their derived local PDF
 parquet are not part of the maintained public runtime inputs. The application

@@ -38,8 +38,8 @@ The full prototype requires three artifact groups:
 | Artifact | Location | Integrity record |
 | --- | --- | --- |
 | Simple English Wikipedia corpus | GitHub release `data-v1` | SHA-256 values in `scripts/download_corpus.py` |
-| `text_embeddings.npy` | Hugging Face revision `b88b9c93be2943f05485874914af00c47b82fc18` | `98592d86c93dbf474decba8b79426cd3c57c73c607b650692ce2df0398fbad74` |
-| `index.faiss` | Hugging Face revision `b88b9c93be2943f05485874914af00c47b82fc18` | `1e87e64080acfce1cbc3ecad2b3a8ae80900dde935135042dc2481675d340b1a` |
+| `text_embeddings.npy` | Project-owned Hugging Face revision `550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62` | `98592d86c93dbf474decba8b79426cd3c57c73c607b650692ce2df0398fbad74` |
+| `index.faiss` | Project-owned Hugging Face revision `550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62` | `1e87e64080acfce1cbc3ecad2b3a8ae80900dde935135042dc2481675d340b1a` |
 
 Download the corpus using the repository script, then place the embedding
 matrix and FAISS index in the paths documented in the root README. The Docker
@@ -50,6 +50,11 @@ The original project record does not preserve the exact Wikipedia snapshot
 date, passage-to-embedding construction environment, or all hardware/runtime
 controls. These omissions prevent the archived artifacts from serving as a
 fully reconstructible benchmark. See [Data Notice](../DATA_NOTICE.md).
+
+The project-owned [Hugging Face artifact repository](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts)
+documents the original teammate-hosted repository and revision, file-level
+provenance, licensing boundary, limitations, and the tagged `v1.0.0` artifact
+set. The mirrored runtime files are byte-identical to the original pinned files.
 
 ## Paper-to-code boundary
 
