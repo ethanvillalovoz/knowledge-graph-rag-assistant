@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "knowledge-graph-rag-assistant"
-version = "1.1.0"
+version = "1.1.1"
 description = "Evidence-aware research assistant using FastAPI, React, DBpedia, FAISS, and OpenAI"
 requires-python = ">=3.10,<3.13"
 

@@ -4,7 +4,8 @@ message: >-
   discuss the capstone system or technical report, use the preferred citation.
 title: Knowledge Graph RAG Assistant
 type: software
-version: 1.1.0
+version: 1.1.1
+date-released: 2026-07-19
 license: MIT
 repository-code: https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant
 url: https://knowledge-graph-rag.github.io/
