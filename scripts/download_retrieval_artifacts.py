@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-DATASET_REVISION = "550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62"
+DATASET_REVISION = "28777c9a144261672040710e0316ca5e40345172"
 DATASET_BASE_URL = (
     "https://huggingface.co/datasets/ethanvillalovoz/"
     f"knowledge-graph-rag-retrieval-artifacts/resolve/{DATASET_REVISION}"

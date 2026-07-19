@@ -8,7 +8,7 @@ The exact Wikipedia snapshot date was not preserved in the original project reco
 
 The separately hosted `text_embeddings.npy` and `index.faiss` files are pinned
 to project-owned Hugging Face dataset revision
-[`550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62`](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62)
+[`28777c9a144261672040710e0316ca5e40345172`](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/28777c9a144261672040710e0316ca5e40345172)
 in the maintained setup. This documented mirror preserves the original
 `miverson9/acme10-he-ragapp-embeddings` repository and revision as provenance.
 Pinning and checksumming the mirrored binaries detects later mutation; it does

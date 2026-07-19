@@ -38,8 +38,8 @@ The full prototype requires three artifact groups:
 | Artifact | Location | Integrity record |
 | --- | --- | --- |
 | Simple English Wikipedia corpus | GitHub release `data-v1` | SHA-256 values in `scripts/download_corpus.py` |
-| `text_embeddings.npy` | Project-owned Hugging Face revision `550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62` | `98592d86c93dbf474decba8b79426cd3c57c73c607b650692ce2df0398fbad74` |
-| `index.faiss` | Project-owned Hugging Face revision `550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62` | `1e87e64080acfce1cbc3ecad2b3a8ae80900dde935135042dc2481675d340b1a` |
+| `text_embeddings.npy` | Project-owned Hugging Face revision `28777c9a144261672040710e0316ca5e40345172` | `98592d86c93dbf474decba8b79426cd3c57c73c607b650692ce2df0398fbad74` |
+| `index.faiss` | Project-owned Hugging Face revision `28777c9a144261672040710e0316ca5e40345172` | `1e87e64080acfce1cbc3ecad2b3a8ae80900dde935135042dc2481675d340b1a` |
 
 Download the corpus using the repository script, then place the embedding
 matrix and FAISS index in the paths documented in the root README. The Docker
