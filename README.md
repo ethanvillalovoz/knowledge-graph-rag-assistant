@@ -5,7 +5,7 @@ This capstone started from a simple frustration: a RAG answer can sound confiden
 [![CI](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/ethanvillalovoz/knowledge-graph-rag-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
 
-[Project page](https://knowledge-graph-rag.github.io/) · [Technical report](docs/paper/knowledge-graph-rag-technical-report.pdf) · [Video](https://www.youtube.com/watch?v=YWdR3FAdq1o) · [Data](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62)
+[Project page](https://knowledge-graph-rag.github.io/) · [Technical report](docs/paper/knowledge-graph-rag-technical-report.pdf) · [Video](https://www.youtube.com/watch?v=YWdR3FAdq1o) · [Data](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/28777c9a144261672040710e0316ca5e40345172)
 
 [![Knowledge Graph RAG demo: compare retrieval paths and inspect the evidence trace](docs/media/rag-demo.gif)](docs/media/rag-demo.mp4)
 
@@ -57,7 +57,7 @@ Open [http://localhost:3000](http://localhost:3000). Demo mode is labeled in the
    python3 scripts/download_corpus.py
    ```
 
-3. When running the backend directly, download and checksum the two retrieval artifacts from the pinned [project-owned dataset revision](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/550aca04b1a6f7d2f64e57ec304b62f8c9ea1d62):
+3. When running the backend directly, download and checksum the two retrieval artifacts from the pinned [project-owned dataset revision](https://huggingface.co/datasets/ethanvillalovoz/knowledge-graph-rag-retrieval-artifacts/tree/28777c9a144261672040710e0316ca5e40345172):
 
    ```bash
    python3 scripts/download_retrieval_artifacts.py
