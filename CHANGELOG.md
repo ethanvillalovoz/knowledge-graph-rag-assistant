@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Migrated the pinned retrieval-artifact dependency to a documented,
+  project-owned Hugging Face dataset while preserving the original teammate
+  repository and revision as provenance.
 - Refined public documentation for the maintained fork of the WSU capstone project.
 - Added contribution, security, environment, Docker ignore, and repository hygiene files.
 - Improved Docker Compose and GitHub Actions configuration for fork-based builds.

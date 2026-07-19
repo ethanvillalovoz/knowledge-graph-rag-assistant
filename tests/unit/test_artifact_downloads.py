@@ -7,6 +7,11 @@ def test_retrieval_artifacts_use_an_immutable_revision():
     assert len(revision) == 40
     assert all(character in "0123456789abcdef" for character in revision)
     assert f"/resolve/{revision}" in download_retrieval_artifacts.DATASET_BASE_URL
+    assert (
+        "huggingface.co/datasets/ethanvillalovoz/"
+        "knowledge-graph-rag-retrieval-artifacts"
+        in download_retrieval_artifacts.DATASET_BASE_URL
+    )
 
     artifacts = {
         artifact.filename: artifact
