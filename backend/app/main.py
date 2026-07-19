@@ -9,7 +9,7 @@ from .routers.vector_search_router import router as vector_search_router
 app = FastAPI(
     title="Knowledge Graph RAG API",
     description="Retrieval API combining DBpedia context, FAISS search, and LLM synthesis.",
-    version="1.1.0",
+    version="1.1.1",
 )
 
 app.add_middleware(
